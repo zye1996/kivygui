@@ -1,0 +1,106 @@
+#:include RecipeUI.kv
+
+<SliderValLabel@Label>:
+    pos: (self.parent.value_pos[0] - sp(16), self.parent.center_y - sp(34)) if self.parent.orientation == 'horizontal' else (self.parent.center_x - sp(22), self.parent.value_pos[1] - sp(16))
+    size_hint: None, None
+    size: sp(20), sp(20)
+    text: str(round(self.parent.value,2))
+    font_size: sp(16)
+	
+<SliderNameLabel@Label>:	
+    #text_size: self.width, None
+	height: self.texture_size[1]
+	font_size: sp(16)
+	valign: "bottom"
+	pos: self.parent.center_x - self.width/2, self.parent.center_y + sp(15)
+	padding_x: 15
+	padding_Y: 25
+
+<RGSlider>:
+	label_text:''
+	SliderNameLabel:		
+		text: root.label_text
+	SliderValLabel:
+		
+<Tooltip>:
+    size_hint: None, None
+    size: self.texture_size[0]+5, self.texture_size[1]+5
+    canvas.before:
+        Color:
+            rgb: 0.2, 0.2, 0.2
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<Separator@Widget>
+    size_hint_y: None
+    thickness: 2
+    margin: 2
+    height: self.thickness + 2 * self.margin
+    color: 1., .0, .0
+    canvas:
+        Color:
+            rgb: self.color
+        Rectangle:
+            pos: self.x + self.margin, self.y + self.margin + 1
+            size: self.width - 2 * self.margin , self.thickness
+
+
+
+
+<Container>:
+    TabbedPanel:
+        do_default_tab: False
+        id: tabs
+        TabbedPanelItem:
+            text: 'Cooking'
+            id: cooking
+            RelativeLayout:
+                Label:
+                    id: rotiNumber
+                    text: "00"
+                    font_size: sp(400)
+                    pos_hint: {'x': 0, 'y': .1}
+                Button:
+                    text: "-"
+                    font_size: sp(120)
+                    size_hint: .15,.2
+                    pos_hint: {'x': 0.05, 'y': .5}
+                    on_release: root.rotiSub()
+                Button:
+                    text: "+"
+                    font_size: sp(120)
+                    size_hint: .15,.2
+                    pos_hint: {'x': 0.8, 'y': .5}
+                    on_release: root.rotiAdd()
+                Button:
+                    text: "Make"
+                    font_size: sp(50)
+                    size_hint: .2,.16
+                    pos_hint: {'x': .44, 'y': .05}
+                    on_release: root.rotiMake()
+                Button:
+                    id: buttonBowl
+                    text: "Open Bowl"
+                    font_size: sp(50)
+                    size_hint: .38,.16
+                    pos_hint: {'x': .01, 'y': .05}
+                    on_release: root.bowlToggle()
+                Button:
+                    text: "Cancel"
+                    font_size: sp(50)
+                    size_hint: .28,.16
+                    pos_hint: {'x': .68, 'y': .05}
+                    on_release: root.rotiCancel()
+
+        Recipe:
+            id: recipe
+
+        TabbedPanelItem:
+            text: 'Status'
+            id: status
+            RstDocument:
+            	id:logwindow
+            	title: "Machine Status"
+                text:
+                    '\n'.join(("Machine Status", "-----------"))

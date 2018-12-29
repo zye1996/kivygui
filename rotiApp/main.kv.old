@@ -1,0 +1,29 @@
+<AddButton>:
+    text: "+1"
+    size: 100,75
+
+<SubtractButton>:
+    text: "-1"
+    size: 100,75
+
+<Container>:
+    rows: 1
+    BoxLayout:
+        orientation: "vertical"
+        AddButton:
+            on_press: root.make_roti()
+        SubtractButton:
+    BoxLayout:
+        orientation: "vertical"
+    	Label:
+            id: temp_top
+            font_size: dp(50)
+            text: 'Temp Top: 100f'
+        Label:
+            id: temp_bottom
+            font_size: dp(50)
+            text: 'Temp Top: 200f'
+        Label:
+            id: queue
+            font_size: dp(50)
+            text: 'Rotis To Make: 0'
