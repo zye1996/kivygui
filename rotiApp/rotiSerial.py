@@ -25,7 +25,15 @@ class rotiSerial:
 				stopbits=serial.STOPBITS_ONE,
 				bytesize=serial.EIGHTBITS
 			)
-	
+
+	def close(self):
+		self.serial.close()
+
+	def isOpen(self):
+		return self.serial.isOpen()
+
+	def check_avail(self):
+		return self.serial.inWaiting()
 
 	def readLineSerial(self):
 		return self.serial.readline()
@@ -55,13 +63,13 @@ class rotiSerial:
 		if self.debug:
 			sys.stdout.write(format(ord(b),"02x"))
 
-	def sendMakeRoti(self,qty=1):
+	def sendMakeRoti(self, qty=1):
 		if (qty > 0 and qty < 255):
-			packed = struct.pack("<cB","M",qty)
+			packed = struct.pack("<cB","M".encode("UTF-8"),qty)
 			self.sendMessage(packed)
 	
-	#thickness  - percentage between 0-255
-	#loadheight - percentage between 0-255
+	# thickness  - percentage between 0-255
+	# loadheight - percentage between 0-255
 	def sendRecipe(self,water=16.0,oil=2.5,flour=24.0, order=RECP_ORDER_OWF,thickness=33,loadheight=251):
 		packed = struct.pack("<cfffHBB", "R".encode(), flour, water, oil, order, thickness, loadheight);
 		self.sendMessage(packed)
@@ -151,7 +159,7 @@ class rotiSerial:
 		packed = struct.pack("<c","Q")
 		self.sendMessage(packed)
 
-	def check_csum(self,msg):
+	def check_csum(self, msg):
 		s = ''.join(msg)
 		sent_csum = ord(s[-1])
 		s = ''.join(s[:-1])
@@ -196,14 +204,3 @@ class rotiSerial:
 			self.temps["bottom"]["ambient"]  = numbers[5]
 
 
-
-#David
-### This is not how you parse info from the machine
-### also why did you not just use "readlineserial that I implemented"
-#### Spaces where used instead of tabs
-#divaD
-      
-	def getFeedback(self):
-		response = self.serial.read(self.serial.inWaiting())
-		#print("Return - " + str(response))
-		return str(response)

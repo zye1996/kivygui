@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<rotiproc>
+    <version>1</version>
+    <!-- ENUMS -->
+    <enums>
+        <enum name="RESP_ACK_CODE">
+            <description>ACK / NACK / ERROR</description>
+            <entry name="RESP_ACK_OK" value="0">
+                <description>CMD OK</description>
+            </entry>
+            <entry name="RESP_ACK_FAIL" value="1">
+                <description>CMD denied</description>
+            </entry>
+        </enum>
+        <enum name="MACHINE_STATE">
+            <description>Machine status of the system</description>
+            <entry name="MACHINE_STATE_INIT" value="0">
+                <description>INIT state</description>
+            </entry>
+            <entry name="MACHINE_STATE_READY" value="1">
+                <description>READY state</description>
+            </entry>
+            <entry name="MACHINE_STATE_RUNNING" value="2">
+                <description>RUNNING state</description>
+            </entry>
+            <entry name="MACHINE_STATE_DONE" value="3">
+                <description>DONE state</description>
+            </entry>
+            <entry name="MACHINE_STATE_PAUSED" value="4">
+                <description>PAUSED state</description>
+            </entry>
+        </enum>
+    </enums>
+
+    <!-- MESSAGES -->
+    <messages>
+        <message id="0" name="INFO_MESSAGE">
+            <description>The information received from slave</description>
+            <field type="char[32]" name="info_msg">Notification from salve</field>
+        </message>
+        <message id="1" name="STATE_MESSAGE">
+            <description>State notification from slave</description>
+            <field type="uint8_t" name="next_state" enum="MACHINE_STATE">The next state</field>
+            <field type="float" name="flour">Remaining flour</field>
+            <field type="float" name="water">Remaining water</field>
+            <field type="float" name="oil">Remaining oil</field>
+            <field type="uint8_t" name="bowl">Boolean open status of bowl</field>
+        </message>
+        <message id="2" name="WARN_MESSAGE">
+            <description>State notification from slave</description>
+            <field type="uint8_t" name="next_state" enum="MACHINE_STATE">The next state</field>
+            <field type="float" name="flour">Remaining flour</field>
+            <field type="float" name="water">Remaining water</field>
+            <field type="float" name="oil">Remaining oil</field>
+            <field type="uint8_t" name="bowl">Boolean open status of bowl</field>
+        </message>
+        <message id="3" name="ERR_MESSAGE">
+            <description>State notification from slave</description>
+            <field type="uint8_t" name="next_state" enum="MACHINE_STATE">The next state</field>
+            <field type="float" name="flour">Remaining flour</field>
+            <field type="float" name="water">Remaining water</field>
+            <field type="float" name="oil">Remaining oil</field>
+            <field type="uint8_t" name="bowl">Boolean open status of bowl</field>
+        </message>
+        <message id="4" name="RESP_MESSAGE">
+            <description>Response from salve when receiving message</description>
+            <field type="uint8_t" name="next_state" enum="RESP_ACK_CODE">The next state</field>
+        </message>
+    </messages>
+</rotiproc>

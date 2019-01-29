@@ -1,0 +1,147 @@
+<SliderValLabel@Label>:
+    pos: (self.parent.value_pos[0] - sp(16), self.parent.center_y - sp(34)) if self.parent.orientation == 'horizontal' else (self.parent.center_x - sp(22), self.parent.value_pos[1] - sp(16))
+    size_hint: None, None
+    size: sp(20), sp(20)
+    text: str(round(self.parent.value,2))
+    font_size: sp(16)
+
+<SliderNameLabel@Label>:
+    #text_size: self.width, None
+	height: self.texture_size[1]
+	font_size: sp(16)
+	valign: "bottom"
+	pos: self.parent.center_x - self.width/2, self.parent.center_y + sp(15)
+	padding_x: 15
+	padding_Y: 25
+
+<RGSlider>:
+	label_text:''
+	SliderNameLabel:
+		text: root.label_text
+	SliderValLabel:
+
+<RecipeScreen>
+    name: 'recipe_screen'
+#    on_enter: self.
+    GridLayout:
+        rows: 6
+        cols: 3
+        RGSlider:
+            id: qty_flour
+            label_text: "Flour"
+            min: 10
+            max: 30
+            value: 24
+            step: .2
+        RGSlider:
+            id: qty_water
+            label_text: "Water"
+            min: 5
+            max: 25
+            value: 16
+            step: .2
+        RGSlider:
+            id: qty_oil
+            label_text: "Oil"
+            min: 0
+            max: 10
+            value: 2.4
+            step: .2
+        RGSlider:
+            id: roti_thickness
+            label_text: "Thickness"
+            min: 0
+            max: 10
+            value: 1.5
+            step: .5
+        RGSlider:
+            id: wedge_opening
+            label_text: "Wedge Opening"
+            min: 1
+            max: 10
+            value: 3.5
+            step: .2
+        RGSlider:
+            id: top_cook_temp
+            label_text: "Top Cook Temp."
+            min: 70
+            max: 500
+            value: 485
+            step: 5
+        RGSlider:
+            id: top_uncook_temp
+            label_text: "Top Uncook Temp."
+            min: 70
+            max: 300
+            value: 200
+            step: 5
+        RGSlider:
+            id: top_cook_time
+            label_text: "Top Cook Time"
+            min: 0
+            max: 60
+            value: 25
+            step: 1
+        RGSlider:
+            id: bottom_cook_temp
+            label_text: "Bottom Cook Temp."
+            min: 300
+            max: 500
+            value: 485
+            step: 5
+        RGSlider:
+            id: bottom_uncook_temp
+            label_text: "Bottom Uncook Temp."
+            min: 70
+            max: 300
+            value: 200
+            step: 1
+        RGSlider:
+            id: bottom_cook_time
+            label_text: "Bottom Cook Time"
+            min: 0
+            max: 60
+            value: 30
+            step: 1
+        Button:
+            text: "Main Manu"
+            font_size: sp(20)
+            size_hint: .5, .40
+            #pos_hint: {'x': .25, 'y': 0}
+            on_release: app.root.to_main_screen()
+        BoxLayout:
+            orientation: 'vertical'
+            SliderNameLabel:
+                text: "Speed"
+            AnchorLayout:
+                TextInput:
+                    id:knead_speed
+                    size_hint: None, None
+                    size: [235,30]
+                    text:'25,40,50,40,30'
+        BoxLayout:
+            orientation: 'vertical'
+            SliderNameLabel:
+                text: "Kneading Time"
+            AnchorLayout:
+                TextInput:
+                    id:knead_time
+                    size_hint: None, None
+                    text: '200,300,400,300,200'
+                    size: [235,30]
+        AnchorLayout:
+            anchor_x:'center'
+            anchor_y: 'center'
+            padding: 5,5,5,5
+            BoxLayout:
+                Button:
+                    text: "Apply"
+                    font_size: sp(20)
+                    size_hint: .5, .40
+                    #pos_hint: {'x': .25, 'y': 0}
+                    on_release: app.root.rotiSendRecp()
+                Button:
+                    text: 'QR Scan'
+                    font_size: sp(20)
+                    size_hint: .5, .40
+                    on_release: app.root.current = "scanning_screen"

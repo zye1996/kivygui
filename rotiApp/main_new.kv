@@ -1,0 +1,104 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:include RecipeScreen.kv
+
+<rotiScreenManager>:
+    #transition: FadeTransition()
+    MainScreen:
+        id: main_screen
+    ScanScreen:
+        id: scan_screen
+    WarningScreen:
+        id: warning_screen
+    RecipeScreen
+        id: recipe_screen
+
+
+<MainScreen>:
+    name: 'main_screen'
+    RelativeLayout:
+        Button:
+            text: 'Recipe'
+            on_release: app.root.to_recipe_screen()
+            size_hint: 0.1, 0.06
+            pos_hint: {'x': 0.8, 'y': 0.9}
+            # background_normal: './src/right_arrow_blue.png'
+
+        Label:
+            id: rotiNumber
+            text: "00"
+            font_size: sp(400)
+            pos_hint: {'x': 0, 'y': .1}
+        Label:
+            id: possibleToMake
+            text: "/0"
+            font_size: sp(100)
+            pos_hint: {'x': .35, 'y': -.1}
+        Button:
+            text: "-"
+            font_size: sp(120)
+            size_hint: .15,.2
+            pos_hint: {'x': 0.05, 'y': .5}
+            on_release: app.root.rotiSub()
+        Button:
+            text: "+"
+            font_size: sp(120)
+            size_hint: .15,.2
+            pos_hint: {'x': 0.8, 'y': .5}
+            on_release: app.root.rotiAdd()
+        Button:
+            id: buttonMake
+            text: "Make"
+            font_size: sp(50)
+            size_hint: .2,.16
+            pos_hint: {'x': .44, 'y': .05}
+            on_release: app.root.rotiMake()
+        Button:
+            id: buttonBowl
+            text: "Open Bowl"
+            font_size: sp(50)
+            size_hint: .38,.16
+            pos_hint: {'x': .01, 'y': .05}
+            on_release: app.root.bowlToggle()
+        Button:
+            text: "Cancel"
+            font_size: sp(50)
+            size_hint: .28,.16
+            pos_hint: {'x': .68, 'y': .05}
+            on_release: app.root.rotiCancel()
+
+<ScanScreen>:
+    name: 'scanning_screen'
+    on_enter: app.root.QR_scan()
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Scanning..."
+            font_size: 30
+        Button:
+            id: ok_btn
+            text: 'cancel'
+            font_size: 30
+            size_hint: .38,.16
+            pos_hint: {'x': .31, 'y': .3}
+
+
+<WarningScreen>:
+    name: 'warning_screen'
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: root.warning_text
+            font_size: 30
+        Button:
+            id: ok_btn
+            text: 'ok'
+            font_size: 30
+            size_hint: .38,.16
+            pos_hint: {'x': .31, 'y': .3}
+            on_release: app.root.to_main_screen()
+
+<RunningScreen>:
+    name: 'running_screen'
+
+

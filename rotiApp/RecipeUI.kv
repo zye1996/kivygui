@@ -6,7 +6,8 @@
     Button:
         id: qr_btn
         text: "QR Scan"
-        on_release: root.parent.parent.current_tab.switchQR()
+        on_release: root.parent.parent.parent.qr.scan(5)
+        #root.parent.parent.parent.current_tab.switchQR(),
 
 <ManualWidget>
     rows: 6
@@ -128,6 +129,6 @@
 
 <QRWidget>
 
-<Recipe>
+<RecipeScreen>
     text: 'Recipe'
     on_release: self.switchModelSel()
