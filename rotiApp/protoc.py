@@ -24,7 +24,7 @@ MESSAGE_FORMAT = {
     "RESP": re.compile("^RESP:")
 }
 
-
+# protocol help functions
 def calc_checksum(bytelist):
     csum = 0x00
     for byte in bytelist:
@@ -32,32 +32,31 @@ def calc_checksum(bytelist):
     return csum
 
 def msg_decode(msg):
-    print(msg[1])
-    msgId = struct.unpack('>B', msg[1].to_bytes(1, 'little'))[0]
+    msgId = struct.unpack('>B', msg[0].to_bytes(1, 'little'))[0]
     payload = msg[1:-1]
     # check sum check
-    if calc_checksum(payload) != payload[-2]:
+    if calc_checksum(msg[0:-1]) != msg[-1]:
         raise ValueError
     else:
-        decoded_data = MESSAGE_CLS_MAP[msgId].unpack(payload[0:-1])
+        decoded_data = MESSAGE_CLS_MAP[msgId].unpack(payload)
         # get json
-        print(decoded_data)
         return MESSAGE_CLS_MAP[msgId].to_json(decoded_data)
 
 
-
+# protocol classes
 class roti_header:
 
     def __init__(self, id):
         self.id = id
 
     def pack(self):
-        return struct.pack('>BB', START_FLAG, self.id)
+        return struct.pack('>B', self.id)
 
 
 class roti_message:
 
     fieldnames = []
+    format = ""
 
     def __init__(self, id, name):
         # generate data packet
@@ -71,9 +70,9 @@ class roti_message:
     def pack(self, payload):
         self._payload = payload
         self._msgbuf = self._header.pack() + payload
-        csum = calc_checksum(self._msgbuf[1:])
+        print(self._msgbuf)
+        csum = calc_checksum(self._msgbuf)
         self._msgbuf += struct.pack('>B', csum)
-        self._msgbuf += struct.pack('>B', END_FLAG)
         return self._msgbuf
 
     @classmethod
@@ -87,14 +86,14 @@ class roti_message:
     def to_json(cls, args):
         return json.dumps(cls.to_dict(args))
 
-
-
+    @classmethod
+    def unpack(cls, payload):
+        return struct.unpack(cls.format, payload)
 
 
 class info_message(roti_message):
 
     fieldnames = ["info_msg"]
-    ordered_fieldnames = ["info_msg"]
     field_types = ["char[32]"]
     format = '>32s'
 
@@ -104,11 +103,7 @@ class info_message(roti_message):
         self._fieldnames = info_message.fieldnames
 
     def pack(self):
-        return super().pack(struct.pack(self.format, self.info_msg))
-
-    @classmethod
-    def unpack(cls, payload):
-        return struct.unpack(cls.format, payload)
+        return super().pack(struct.pack(self.format, self.info_msg.encode('utf-8')))
 
 
 class state_message(roti_message):
@@ -117,7 +112,7 @@ class state_message(roti_message):
     format = '>Bfff?'
 
     def __init__(self, next_state, flour, water, oil, bowl):
-        super().__init__(ROTI_MSG_ID_INFO, "INFO_MESSAGE")
+        super().__init__(ROTI_MSG_ID_STATE, "STATE_MESSAGE")
         self._fieldnames = state_message.fieldnames
         self.next_state = next_state
         self.flour = flour
@@ -128,21 +123,38 @@ class state_message(roti_message):
     def pack(self):
         return super().pack(struct.pack(self.format, self.next_state, self.flour, self.water, self.oil, self.bowl))
 
-    @classmethod
-    def unpack(cls, payload):
-        return struct.unpack(cls.format, payload)
+
+class warn_message(roti_message):
+    pass
+
+class err_message(roti_message):
+    pass
+
+class resp_message(roti_message):
+    pass
+
+# CMD message sent from master
+class cmd_message(roti_message):
+
+    fieldnames = []
+    format = ""
+    pass
 
 
 MESSAGE_CLS_MAP = {
     0: info_message,
     1: state_message,
-    "WARN": 2,
-    "ERR": 3,
-    "RESP": 4
+    2: warn_message,
+    3: err_message,
+    4: resp_message,
+    5: cmd_message
 }
 
 if __name__ == "__main__":
     state_msg = state_message(1, 0.1, 0.1, 0.1, False)
-    print(msg_decode(state_msg.pack()[1:]))
+    print(msg_decode(state_msg.pack()))
+    info_msg = info_message("Hello")
+    print(info_msg.pack())
+
 
 

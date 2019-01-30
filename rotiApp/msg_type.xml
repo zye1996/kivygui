@@ -66,5 +66,9 @@
             <description>Response from salve when receiving message</description>
             <field type="uint8_t" name="next_state" enum="RESP_ACK_CODE">The next state</field>
         </message>
+        <message id="5" name="CMD_MESSAGE">
+            <description>Response from salve when receiving message</description>
+            <field type="uint8_t" name="next_state" enum="RESP_ACK_CODE">The next state</field>
+        </message>
     </messages>
 </rotiproc>

@@ -70,7 +70,7 @@ class rotiSerial:
 	
 	# thickness  - percentage between 0-255
 	# loadheight - percentage between 0-255
-	def sendRecipe(self,water=16.0,oil=2.5,flour=24.0, order=RECP_ORDER_OWF,thickness=33,loadheight=251):
+	def sendRecipe(self,water=16.0,oil=2.5,flour=24.0, order=RECP_ORDER_OWF, thickness=33, loadheight=251):
 		packed = struct.pack("<cfffHBB", "R".encode(), flour, water, oil, order, thickness, loadheight);
 		self.sendMessage(packed)
 

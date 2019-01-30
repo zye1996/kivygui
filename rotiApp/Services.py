@@ -3,7 +3,7 @@
 Service classes to handle information
 
 '''
-from protoc import MESSAGE_FORMAT
+from protoc import *
 from imutils.video import VideoStream
 from pyzbar import pyzbar
 from rotiSerial import rotiSerial
@@ -162,12 +162,13 @@ class SerialMonitor(Service):
     # a thread to continuously listen on the serial
     class ListenThread(threading.Thread):
 
-        def __init__(self, state_queue, info_queue):
+        def __init__(self, state_queue, info_queue, resp_queue=None):
             super().__init__()
             # a dict of queues for dispatching messages
             self.queues = {
                 "STATE": state_queue,
-                "INFO": info_queue
+                "INFO": info_queue,
+                "RESP": resp_queue
                            }
             self.done = False
 
@@ -215,10 +216,10 @@ class SerialMonitor(Service):
 
         # set of queues
         self.last_feedback = None
-        self.feedback = queue.Queue()
+        self.resp_queue = queue.Queue()
 
         # start listener
-        self.listener = self.ListenThread(state_queue, info_queue)
+        self.listener = self.ListenThread(state_queue, info_queue, self.resp_queue)
         self.listener.attach(self.serial_comm)
         self.listener.start()
 
@@ -259,7 +260,7 @@ class SerialMonitor(Service):
                 pass
             # check whether received
             try:
-                self.last_feedback = self.feedback.get()
+                self.last_feedback = self.resp_queue.get()
             except serial.SerialTimeoutException:
                 print("No feedback, lost connection!")
                 self.last_feedback = -1
